@@ -1,0 +1,25 @@
+{
+  "name": "01-npm-intro",
+  "version": "1.0.0",
+  "description": "Introduction to npm",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js",
+    "start-server": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jorgealemangonzalez/nodejs-course.git"
+  },
+  "author": "jorge aleman gonzalez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jorgealemangonzalez/nodejs-course/issues"
+  },
+  "homepage": "https://github.com/jorgealemangonzalez/nodejs-course#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "nodemon": "2.0.2"
+  }
+}
