@@ -1,0 +1,9 @@
+.user-item {
+    width: 20rem;
+    max-width: 95%;
+}
+
+.user__title {
+    font-size: 1.2rem;
+    text-align: center;
+}

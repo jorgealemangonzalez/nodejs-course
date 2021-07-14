@@ -1,0 +1,13 @@
+extends layouts/main-layout.pug
+
+block styles
+    link(rel="stylesheet", href="/css/forms.css")
+    link(rel="stylesheet", href="/css/product.css")
+
+block content
+    main
+        form.product-form(method="POST")
+            .form-control
+                label(for="name") User name
+                input(type="text", name="name")#title
+            button.btn(type="submit") Add User
