@@ -10,7 +10,7 @@ const errorController = require('./controllers/error');
 const User = require('./models/user');
 
 const MONGODB_URI =
-  'mongodb+srv://admin:FILLME@jorgemaincluster.ts7ww.mongodb.net/shop?retryWrites=true&w=majority';
+  'mongodb+srv://maximilian:9u4biljMQc4jjqbe@cluster0-ntrwp.mongodb.net/shop';
 
 const app = express();
 const store = new MongoDBStore({
@@ -35,15 +35,18 @@ app.use(
     store: store
   })
 );
+
 app.use((req, res, next) => {
-  if(req.session.user) {
-    console.log(req.session.user)
-    User.findById(req.session.user._id).then(user => {
-      req.session.user = user
-      next()
+  if (!req.session.user) {
+    return next();
+  }
+  User.findById(req.session.user._id)
+    .then(user => {
+      req.user = user;
+      next();
     })
-  } else next()
-})
+    .catch(err => console.log(err));
+});
 
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
