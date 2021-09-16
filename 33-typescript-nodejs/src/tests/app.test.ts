@@ -1,12 +1,12 @@
 import { expect } from 'chai';
 import request from 'supertest';
 import app from '../app';
-import { clearDB } from '../models/todo';
+import { todoDAO } from '../storage/TodoDAO';
 
 describe('App should', () => {
 
     afterEach(() => {
-        clearDB()
+        todoDAO.clearStorage()
     })
 
     after((done) => {

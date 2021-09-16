@@ -1,6 +1,7 @@
 import { Router } from 'express';
+import { Todo } from '../models/todo';
+import { todoDAO } from '../storage/TodoDAO';
 
-import { Todo, TodoImpl, todos } from '../models/todo';
 
 type RequestBody = { text: string };
 type RequestParams = { todoId: string };
@@ -8,34 +9,43 @@ type RequestParams = { todoId: string };
 const router = Router();
 
 router.get('/', (req, res, next) => {
-  return res.status(200).json({ todos });
+  return res.status(200).json({ todos: todoDAO.all });
 });
 
 router.post('/todo', (req, res, next) => {
-  const body = req.body as RequestBody;
-  const newTodo: Todo = new TodoImpl(
-    new Date().toISOString(),
-    body.text
-  );
-  res.status(201).json({ message: 'Added Todo', todo: newTodo, todos: todos });
+  const text = (req.body as RequestBody).text
+  const id = new Date().toISOString()
+  res.status(201).json(mapToAddedTodoDTO(todoDAO.create({ id, text })));
 });
 
 router.put('/todo/:todoId', (req, res, next) => {
   const params = req.params as RequestParams;
   const tid = params.todoId;
-  const body = req.body as RequestBody;
-  const todo = todos.find((todoItem) => todoItem.id === tid);
-  if (todo) {
-    todo.text = body.text;
-    return res.status(200).json({ message: 'Updated todo', todos: todos });
+  const text = (req.body as RequestBody).text;
+  const updated = todoDAO.update(tid, (t) => { return { ...t, text } })
+  if (updated !== undefined) {
+    return res.status(200).json({ message: 'Updated todo', todos: todoDAO.all });
   }
   res.status(404).json({ message: 'Could not find todo for this id.' });
 });
 
 router.delete('/todo/:todoId', (req, res, next) => {
   const params = req.params as RequestParams;
-  todos.find((todoItem) => todoItem.id === params.todoId)?.delete()
-  res.status(200).json({ message: 'Deleted todo', todos: todos });
+  var todo = todoDAO.find(params.todoId)
+  todo && todoDAO.delete(todo)
+
+  res.status(200).json({ message: 'Deleted todo', todos: todoDAO });
 });
 
 export default router;
+
+type AddedTodoDTO = {
+  message: string,
+  todo: Todo,
+  todos: Todo[]
+}
+
+function mapToAddedTodoDTO(newTodo: Todo): AddedTodoDTO {
+  return { message: 'Added Todo', todo: newTodo, todos: todoDAO.all };
+}
+
